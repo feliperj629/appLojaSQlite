@@ -68,7 +68,7 @@ npx expo start
 Para executar o projeto, você pode usar:
 
 ```bash
-npm start
+npm start ou npx expo start
 ```
 
 Isso abrirá o Metro Bundler e você poderá:
