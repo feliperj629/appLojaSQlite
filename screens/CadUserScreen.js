@@ -1,24 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { inserirUsuario } from '../db/dbUsuarios';
 
 export default function CadastroScreen({ navigation }) {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
 
-
-    const enviarDados = () => {
+    const enviarDados = async () => {
         if (!nome || !email) {
             alert('Por favor, preencha todos os campos!');
             return;
         }
-        alert(nome + ' ' + email);
-        //Navega para a tela de dados com os dados do formulário.
-        navigation.navigate('ListaDados', { nome, email });
-
+        try {
+            const result = await inserirUsuario(nome, email);
+            if (result) {
+                alert('Usuário cadastrado com sucesso!');
+                navigation.navigate('Consultar Usuario', { nome, email });
+            }
+        } catch (error) {
+            alert('Erro ao cadastrar usuário: ' + error.message);
+        }
     };
 
     return (
         <View style={styles.container}>
+
+
             <Text style={styles.label}>Nome:</Text>
             <TextInput
                 style={styles.input}
@@ -34,16 +41,31 @@ export default function CadastroScreen({ navigation }) {
                 placeholder="Digite seu email"
                 keyboardType="email-address"
             />
-            <Button title="Enviar" onPress={enviarDados} />
+            {/* Colocar botão voltar ao lado do botão enviar */}
+            <View style={styles.buttonContainer}>
+                <Button title="Voltar" onPress={() => navigation.goBack()} />
+                <Button title="Enviar" onPress={enviarDados} style={styles.button} />
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, justifyContent: 'center' },
+    container: { padding: 20, justifyContent: 'center' },
     label: { fontSize: 18, marginBottom: 5 },
     input: {
         borderWidth: 1, borderColor: '#ccc',
         padding: 10, marginBottom: 20, borderRadius: 5
+    },
+    button: {
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
     }
 });

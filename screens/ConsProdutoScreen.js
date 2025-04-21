@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Button, ActivityIndicator, RefreshControl, Alert, Image } from 'react-native';
-import { listarProdutos } from '../db/dbProdutos';
+import { listarProdutos, removerProduto, atualizarProduto } from '../db/dbProdutos';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { obterUriImagem } from '../utils/imageUploader';
@@ -67,6 +67,23 @@ export default function ConsProdutoScreen({ route }) {
                             style={styles.imagem}
                         />
                     )}
+
+                    <View style={styles.action}>
+                        <Button title="Editar" onPress={() => navigation.navigate('Cadastrar Produto', { id: item.id })} />
+                        <Button
+                            title="Remover"
+                            color="red"
+                            onPress={() => Alert.alert('Remover Produto', 'Tem certeza que deseja remover este produto?', [
+                                { text: 'Cancelar', style: 'cancelar' },
+                                {
+                                    text: 'Remover', onPress: () => {
+                                        removerProduto(item.id);
+                                        carregarProdutos();
+                                    }
+                                }
+                            ])}
+                        />
+                    </View>
                 </View>
 
             </View>
@@ -84,7 +101,8 @@ export default function ConsProdutoScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>Meus produtos</Text>
+            <Text style={styles.titulo}>Lista de Produtos</Text>
+            <Button title="Cadastrar Produto" onPress={() => navigation.navigate('Cadastrar Produto')} />
             <FlatList
                 data={produtos}
                 renderItem={renderItem}
@@ -107,7 +125,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f5f5f5'
     },
     loadingContainer: {
         flex: 1,

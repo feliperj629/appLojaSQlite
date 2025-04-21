@@ -1,31 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Button, ActivityIndicator, RefreshControl, Alert, Image } from 'react-native';
-import { listarProdutos } from '../db/dbProdutos';
+import { View, Text, StyleSheet, FlatList, Button, ActivityIndicator, RefreshControl } from 'react-native';
+import { listarUsuarios } from '../db/dbUsuarios';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { obterUriImagem } from '../utils/imageUploader';
 
-
-// Função para criar um delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-
-export default function ConsProdutoScreen({ route }) {
-    const [produtos, setProdutos] = useState([]);
+export default function ConsUserScreen({ route }) {
+    const [usuarios, setUsuarios] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
 
-    // Função para carregar os produtos
-    const carregarProdutos = async () => {
+    // Função para carregar os usuários
+    const carregarUsuarios = async () => {
         try {
             setLoading(true);
-            // Adiciona um delay de 2 segundos
-            // await delay(2000);
-            const listaProdutos = await listarProdutos();
-            setProdutos(listaProdutos);
+            const listaUsuarios = await listarUsuarios();
+            setUsuarios(listaUsuarios);
         } catch (error) {
-            console.error('Erro ao carregar produtos:', error);
+            console.error('Erro ao carregar usuários:', error);
         } finally {
             setLoading(false);
         }
@@ -33,60 +25,44 @@ export default function ConsProdutoScreen({ route }) {
 
     // Atualiza a lista quando a tela recebe foco
     useFocusEffect(
-        // Função para carregar os produtos
+        // Função para carregar os usuários
         React.useCallback(() => {
-            carregarProdutos();
+            carregarUsuarios();
         }, [])
     );
 
-    // Função para atualizar a lista de produtos
+    // Função para atualizar a lista de usuários
     const onRefresh = async () => {
         setRefreshing(true);
-        await carregarProdutos();
+        await carregarUsuarios();
         setRefreshing(false);
     };
 
-    const renderItem = ({ item }) => {
-        // console.log(item);
-        const formatador = new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        });
-        const valorFormatado = formatador.format(item.preco);
-        // console.log(valorFormatado);
-
-        return (
-            <View style={styles.itemContainer}>
-                <View style={styles.row}>
-                    <Text style={styles.nome}>{item.nome}</Text>
-                    <Text style={styles.preco}>{valorFormatado}</Text>
-
-                    {item.imagem && (
-                        <Image
-                            source={{ uri: obterUriImagem(item.imagem) }}
-                            style={styles.imagem}
-                        />
-                    )}
-                </View>
-
-            </View>
-        );
-    };
+    const renderItem = ({ item }) => (
+        <View style={styles.itemContainer}>
+            <Text style={styles.nome}>{item.nome}</Text>
+            <Text style={styles.email}>{item.email}</Text>
+        </View>
+    );
 
     if (loading && !refreshing) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={styles.loadingText}>Carregando produtos...</Text>
+                <Text style={styles.loadingText}>Carregando usuários...</Text>
             </View>
         );
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>Meus produtos</Text>
+
+            <Text style={styles.titulo}>Lista de Usuários</Text>
+
+            <Button title="Cadastrar Usuario" onPress={() => navigation.navigate('Cadastrar Usuario')} />
+
             <FlatList
-                data={produtos}
+                data={usuarios}
                 renderItem={renderItem}
                 keyExtractor={item => item.id.toString()}
                 refreshControl={
@@ -96,7 +72,7 @@ export default function ConsProdutoScreen({ route }) {
                     />
                 }
                 ListEmptyComponent={
-                    <Text style={styles.emptyText}>Nenhum produto cadastrado</Text>
+                    <Text style={styles.emptyText}>Nenhum usuário cadastrado</Text>
                 }
             />
         </View>
@@ -107,7 +83,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f5f5f5'
     },
     loadingContainer: {
         flex: 1,
@@ -157,7 +133,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5
     },
-    preco: {
+    email: {
         fontSize: 16,
         color: '#666'
     },
@@ -166,29 +142,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#666',
         marginTop: 20
-    },
-    action: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: 5
-    },
-    button: {
-        backgroundColor: 'red',
-        padding: 10,
-        borderRadius: 50,
-        alignSelf: 'flex-end'
-    },
-    cancelar: {
-        backgroundColor: 'red',
-        padding: 10,
-        borderRadius: 50,
-        alignSelf: 'flex-end'
-    },
-    imagem: {
-        width: 150,
-        height: 150,
-        borderRadius: 5,
-        backgroundColor: '#ccc'
     }
 });
