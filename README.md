@@ -12,6 +12,7 @@ Este é um aplicativo de loja desenvolvido em React Native que demonstra conceit
 - Expo
 - JavaScript/React
 - SQLite (Banco de dados local)
+- React Navigation (Navegação entre telas)
 
 ## 📁 Estrutura do Projeto
 
@@ -26,6 +27,7 @@ appLoja/
 │   ├── ConsUserScreen.js       # Tela de consulta de usuários
 │   └── ProfileScreen.js        # Tela de perfil
 ├── navigation/      # Configuração de navegação
+│   └── DrawerNavigator.js      # Configuração do menu lateral
 ├── utils/           # Funções utilitárias
 │   └── imageUploader.js        # Utilitário para upload de imagens
 ├── db/              # Configuração do banco de dados
@@ -39,6 +41,15 @@ appLoja/
 ├── package.json     # Dependências do projeto
 └── package-lock.json # Versões exatas das dependências
 ```
+
+## 🛠️ Funcionalidades
+
+- Cadastro e consulta de produtos
+- Cadastro e consulta de usuários
+- Upload de imagens para produtos
+- Menu lateral para navegação
+- Banco de dados local SQLite
+- Interface responsiva e moderna
 
 ## 🛠️ Instalação
 
@@ -54,7 +65,7 @@ npm install
 
 3. Inicie o projeto:
 ```bash
-npm start 
+npm start
 ```
 
 ou
@@ -68,7 +79,13 @@ npx expo start
 Para executar o projeto, você pode usar:
 
 ```bash
-npm start ou npx expo start
+npm start
+```
+
+ou
+
+```bash
+npx expo start
 ```
 
 Isso abrirá o Metro Bundler e você poderá:
