@@ -1,4 +1,4 @@
-# AppLoja
+# appLojaSQlite
 
 Um aplicativo de loja desenvolvido em React Native como parte de um projeto de aula.
 
